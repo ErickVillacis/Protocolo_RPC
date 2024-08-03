@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPC Client</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 20px;
+        }
+
+        .card {
+            margin-bottom: 10px;
+        }
+
+        .card-header h2 {
+            font-size: 1.2rem;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            font-size: 0.9rem;
+        }
+
+        .result-container {
+            white-space: pre-wrap;
+        }
+    </style>
+    <script>
+        async function rpcCall(method, params) {
+            const response = await fetch("http://localhost:8080/rpc", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    jsonrpc: "2.0", method, params, id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER) + 1
+                }),
+            });
+            return await response.json();
+        }
+
+        async function handleFormSubmit(event, rpcMethod, resultId) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            let data = Object.fromEntries(formData.entries());
+            if (rpcMethod === "laptop.create" || rpcMethod === "laptop.update") {
+                data = { laptop: data };
+            }
+            const result = await rpcCall(rpcMethod, data);
+            document.getElementById(resultId).innerText = JSON.stringify(result, null, 2);
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Laptop Manager</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Create Laptop</h2>
+                    </div>
+                    <div class="card-body">
+                        <form onsubmit="handleFormSubmit(event, 'laptop.create', 'createResult');">
+                            <div class="form-group"><label for="brandCreate">Brand:</label><input type="text"
+                                    id="brandCreate" name="brand" class="form-control" required></div>
+                            <div class="form-group"><label for="colorCreate">Color:</label><input type="text"
+                                    id="colorCreate" name="color" class="form-control" required></div>
+                            <div class="form-group"><label for="weightCreate">Weight (kg):</label><input type="number"
+                                    id="weightCreate" name="weight" class="form-control" step="0.01" required></div>
+                            <div class="form-group"><label for="dimensionsCreate">Dimensions:</label><input type="text"
+                                    id="dimensionsCreate" name="dimensions" class="form-control" required></div>
+                            <div class="form-group"><label for="priceCreate">Price ($):</label><input type="number"
+                                    id="priceCreate" name="price" class="form-control" step="0.01" required></div>
+                            <button type="submit" class="btn btn-primary">Create Laptop</button>
+                        </form>
+                        <pre id="createResult" class="result-container"></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Get All Laptops</h2>
+                    </div>
+                    <div class="card-body">
+                        <form onsubmit="handleFormSubmit(event, 'laptop.all', 'getAllResult');">
+                            <button type="submit" class="btn btn-primary">Get All Laptops</button>
+                        </form>
+                        <pre id="getAllResult" class="result-container"></pre>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Get Laptop</h2>
+                    </div>
+                    <div class="card-body">
+                        <form onsubmit="handleFormSubmit(event, 'laptop.get', 'getResult');">
+                            <div class="form-group"><label for="laptopGetId">Laptop ID:</label><input type="text"
+                                    id="laptopGetId" name="id" class="form-control" required></div>
+                            <button type="submit" class="btn btn-primary">Get Laptop</button>
+                        </form>
+                        <pre id="getResult" class="result-container"></pre>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Update Laptop</h2>
+                    </div>
+                    <div class="card-body">
+                        <form onsubmit="handleFormSubmit(event, 'laptop.update', 'updateResult');">
+                            <div class="form-group"><label for="laptopUpdateId">Laptop ID:</label><input type="text"
+                                    id="laptopUpdateId" name="id" class="form-control" required></div>
+                            <div class="form-group"><label for="brandUpdate">Brand:</label><input type="text"
+                                    id="brandUpdate" name="brand" class="form-control" required></div>
+                            <div class="form-group"><label for="colorUpdate">Color:</label><input type="text"
+                                    id="colorUpdate" name="color" class="form-control" required></div>
+                            <div class="form-group"><label for="weightUpdate">Weight (kg):</label><input type="number"
+                                    id="weightUpdate" name="weight" class="form-control" step="0.01" required></div>
+                            <div class="form-group"><label for="dimensionsUpdate">Dimensions:</label><input type="text"
+                                    id="dimensionsUpdate" name="dimensions" class="form-control" required></div>
+                            <div class="form-group"><label for="priceUpdate">Price ($):</label><input type="number"
+                                    id="priceUpdate" name="price" class="form-control" step="0.01" required></div>
+                            <button type="submit" class="btn btn-primary">Update Laptop</button>
+                        </form>
+                        <pre id="updateResult" class="result-container"></pre>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Delete Laptop</h2>
+                    </div>
+                    <div class="card-body">
+                        <form onsubmit="handleFormSubmit(event, 'laptop.delete', 'deleteResult');">
+                            <div class="form-group"><label for="laptopDeleteId">Laptop ID:</label><input type="text"
+                                    id="laptopDeleteId" name="id" class="form-control" required></div>
+                            <button type="submit" class="btn btn-danger">Delete Laptop</button>
+                        </form>
+                        <pre id="deleteResult" class="result-container"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

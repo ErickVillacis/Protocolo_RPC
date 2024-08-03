@@ -1,0 +1,10 @@
+INSERT INTO laptop (brand, color, weight, dimensions, price) VALUES ('Dell', 'Black', 1.5, '14x9x0.7', 999.99);
+INSERT INTO laptop (brand, color, weight, dimensions, price) VALUES ('HP', 'Silver', 1.6, '15x10x0.8', 899.99);
+INSERT INTO laptop (brand, color, weight, dimensions, price) VALUES ('Lenovo', 'Gray', 1.8, '15.6x10.2x0.9', 749.99);
+INSERT INTO laptop (brand, color, weight, dimensions, price) VALUES ('Asus', 'Blue', 1.4, '14.5x9.5x0.8', 699.99);
+INSERT INTO laptop (brand, color, weight, dimensions, price) VALUES ('Acer', 'Red', 1.9, '15.4x10.4x0.8', 649.99);
+INSERT INTO laptop (brand, color, weight, dimensions, price) VALUES ('Apple', 'Silver', 1.3, '13.3x8.9x0.6', 1299.99);
+INSERT INTO laptop (brand, color, weight, dimensions, price) VALUES ('Microsoft', 'Black', 1.2, '12.4x8.8x0.7', 1199.99);
+INSERT INTO laptop (brand, color, weight, dimensions, price) VALUES ('Samsung', 'White', 1.7, '14.2x9.8x0.7', 799.99);
+INSERT INTO laptop (brand, color, weight, dimensions, price) VALUES ('Razer', 'Green', 1.5, '14x9x0.8', 1499.99);
+INSERT INTO laptop (brand, color, weight, dimensions, price) VALUES ('MSI', 'Black', 2.0, '17.3x10.7x1.0', 1399.99);
