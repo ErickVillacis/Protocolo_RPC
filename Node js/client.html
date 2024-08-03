@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPC Client</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 50px;
+        }
+
+        .result-container {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        async function rpcCall(method, params) {
+            const response = await fetch("http://127.0.0.1:3000", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    jsonrpc: "2.0",
+                    method: method,
+                    params: params,
+                    id: 1
+                }),
+            });
+            return await response.json();
+        }
+
+        async function createTask() {
+            const task = {
+                Nombre: document.getElementById('nombre').value,
+                Apellido: document.getElementById('apellido').value,
+                Titulo: document.getElementById('titulo').value,
+                Descripcion: document.getElementById('descripcion').value,
+                Estado: document.getElementById('estado').value
+            };
+            let result = await rpcCall("createTask", [task]);
+            document.getElementById('createResult').innerText = JSON.stringify(result.result, null, 2);
+        }
+
+        async function getTask() {
+            const taskId = document.getElementById('taskId').value;
+            let result = await rpcCall("getTask", [taskId]);
+            document.getElementById('getResult').innerText = JSON.stringify(result.result, null, 2);
+        }
+
+        async function updateTask() {
+            const taskId = document.getElementById('taskId').value;
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const titulo = document.getElementById('titulo').value;
+            const descripcion = document.getElementById('descripcion').value;
+            const estado = document.getElementById('estado').value;
+
+            const updatedTask = {
+                taskId: taskId,
+                Nombre: nombre,
+                Apellido: apellido,
+                Titulo: titulo,
+                Descripcion: descripcion,
+                Estado: estado
+            };
+
+            console.log("Updated Task:", updatedTask);  // Log the updatedTask for debugging
+            console.log("Task ID:", taskId);  // Log the taskId for debugging
+
+            let result = await rpcCall("updateTask", [taskId, updatedTask]);
+            document.getElementById('updateResult').innerText = JSON.stringify(result.result, null, 2);
+        }
+
+        async function deleteTask() {
+            const taskId = document.getElementById('taskId').value;
+            let result = await rpcCall("deleteTask", [taskId]);
+            document.getElementById('deleteResult').innerText = JSON.stringify(result.result, null, 2);
+        }
+
+        async function getAllTasks() {
+            let result = await rpcCall("getAllTasks", []);
+            document.getElementById('getAllResult').innerText = JSON.stringify(result.result, null, 2);
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">Task Manager</h1>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h2>Create Task</h2>
+            </div>
+            <div class="card-body">
+                <form onsubmit="event.preventDefault(); createTask();">
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido">Apellido:</label>
+                        <input type="text" id="apellido" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="titulo">Titulo:</label>
+                        <input type="text" id="titulo" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripcion:</label>
+                        <input type="text" id="descripcion" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="estado">Estado:</label>
+                        <select id="estado" class="form-control" required>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Completado">Completado</option>
+                            <option value="Iniciado">Iniciado</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Task</button>
+                </form>
+                <pre id="createResult" class="result-container"></pre>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h2>Get All Tasks</h2>
+            </div>
+            <div class="card-body">
+                <form onsubmit="event.preventDefault(); getAllTasks();">
+                    <button type="submit" class="btn btn-primary">Get All Tasks</button>
+                </form>
+                <pre id="getAllResult" class="result-container"></pre>
+            </div>
+        </div>
+
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h2>Get Task</h2>
+            </div>
+            <div class="card-body">
+                <form onsubmit="event.preventDefault(); getTask();">
+                    <div class="form-group">
+                        <label for="taskId">Task ID:</label>
+                        <input type="text" id="taskId" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Get Task</button>
+                </form>
+                <pre id="getResult" class="result-container"></pre>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h2>Update Task</h2>
+            </div>
+            <div class="card-body">
+                <form onsubmit="event.preventDefault(); updateTask();">
+                    <div class="form-group">
+                        <label for="taskId">Task ID:</label>
+                        <input type="text" id="taskId" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido">Apellido:</label>
+                        <input type="text" id="apellido" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="titulo">Titulo:</label>
+                        <input type="text" id="titulo" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripcion:</label>
+                        <input type="text" id="descripcion" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="estado">Estado:</label>
+                        <select id="estado" class="form-control" required>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Completado">Completado</option>
+                            <option value="Iniciado">Iniciado</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Task</button>
+                </form>
+                <pre id="updateResult" class="result-container"></pre>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h2>Delete Task</h2>
+            </div>
+            <div class="card-body">
+                <form onsubmit="event.preventDefault(); deleteTask();">
+                    <div class="form-group">
+                        <label for="taskId">Task ID:</label>
+                        <input type="text" id="taskId" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Delete Task</button>
+                </form>
+                <pre id="deleteResult" class="result-container"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
